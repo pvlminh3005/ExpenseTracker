@@ -3,6 +3,8 @@ import { View, Text, Image, StyleSheet } from 'react-native'
 import { COLORS, SIZES } from '../constants/'
 
 export default function HistoryCard({ category, expense }) {
+    var formatDate = new Date(expense.registration_data)
+    formatDate = formatDate.toDateString()
     const value = (expense.status === "C") ? "-" : "+"
     return (
         <View style={styles.container}>
@@ -19,7 +21,11 @@ export default function HistoryCard({ category, expense }) {
                     <Text style={styles.title}>{expense.title}</Text>
                 </View>
             </View>
-            <Text style={{ color: (expense.status === "P") ? COLORS.lightGreen : COLORS.red, ...styles.value }}>{value}${expense.total.toFixed(2)}</Text>
+            <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end' }}>
+                <Text style={{ textAlign: 'left', color: (expense.status === "P") ? COLORS.lightGreen : COLORS.red, ...styles.value }}>{value}${expense.total.toFixed(2)}</Text>
+                <Text style={styles.date}>{formatDate}</Text>
+            </View>
+
         </View >
     )
 }
@@ -28,10 +34,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginVertical: 5,
-        padding: SIZES.base + 2,
+        marginHorizontal: SIZES.base + 2,
+        paddingVertical: SIZES.base + 2,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+        borderBottomWidth: 0.5,
+        borderBottomColor: COLORS.gray,
     },
     content: {
         flexDirection: 'row',
@@ -66,6 +75,11 @@ const styles = StyleSheet.create({
         fontSize: SIZES.h3,
         fontWeight: '400',
         letterSpacing: 0.4,
+    },
+    date: {
+        fontSize: SIZES.h4,
+        fontWeight: '400',
+        color: COLORS.darkgray,
     },
     wrapper: {
         flexDirection: 'column', alignItems: 'center',

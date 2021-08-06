@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react'
-import { FlatList, Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { FlatList, Image, View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleSheet, Dimensions, Animated } from 'react-native'
 import { icons, COLORS, SIZES } from '../constants'
 import LinearGradient from 'react-native-linear-gradient'
 
-import { Container, HeaderContent, HeaderBar, ImageHeader, HeaderCard, ManageTracker, MiddleCard, ExpireCard, FooterCard, ImageChip, ImageNetwork, ImageVisa, OwnerCard, UserCard, DateExpired, ValidCard, HeaderHistory, FilterButton, HistoryView, History, Filter, ManageText, TrackerText } from '../styles/WalletStyle'
-import { getAllExpenses, getExpensesById, confirmExpense } from '../api/expenseAPI'
+import { Container, HeaderContent, HeaderBar, ImageHeader, HeaderCard, ManageTracker, MiddleCard, FooterCard, ImageChip, ImageNetwork, OwnerCard, UserCard, HeaderHistory, FilterButton, HistoryView, History, Filter, ManageText, TrackerText, ModalBackground, ModalContainer, ViewModal, } from '../styles/WalletStyle'
+import { getAllExpenses } from '../api/expenseAPI'
 import HistoryCard from '../components/HistoryCard'
+let listHistory = [] //save all history 
+
 
 export default function WalletScreen({ route, navigation }) {
     const { categoriesData } = route.params
-    const [expensesData, setExpensesData] = useState([])
-    const [expensesData1, setExpensesData1] = useState([])
-
+    const [showModal, setShowModal] = useState(false)
+    const [expensesData, setExpensesData] = useState([]) //save to filter history
 
     const fetchAllExpenses = async () => {
         await getAllExpenses().then(data => {
             setExpensesData(data)
+            listHistory = data
         })
     }
 
@@ -24,10 +26,22 @@ export default function WalletScreen({ route, navigation }) {
     }, [navigation])
 
     const renderCard = () => {
-        let incomeTracker = expensesData.filter(a => a.status == 'P')
-        let totalIncome = incomeTracker.reduce((a, b) => (a + b.total || 0), 0)
-        let expenseTracker = expensesData.filter(a => a.status == 'C')
-        let totalExpense = expenseTracker.reduce((a, b) => (a + b.total || 0), 0)
+        let categoryData = categoriesData.map(item => {
+            let incomeTracker = item.expenses.filter(a => a.status == 'P')
+            var totalIncome = incomeTracker.reduce((a, b) => a + (b.total || 0), 0)
+            let expenseTracker = item.expenses.filter(a => a.status == 'C')
+            var totalExpense = expenseTracker.reduce((a, b) => a + (b.total || 0), 0)
+
+            return {
+                total: (totalIncome - totalExpense),
+                totalIncome: totalIncome,
+                totalExpense: totalExpense
+            }
+        })
+
+        var totalData = categoryData.reduce((a, b) => a + (b.total || 0), 0)
+        var totalIncome = categoryData.reduce((a, b) => a + (b.totalIncome || 0), 0)
+        var totalExpense = categoryData.reduce((a, b) => a + (b.totalExpense || 0), 0)
 
         return (
             <HeaderContent style={{
@@ -52,7 +66,7 @@ export default function WalletScreen({ route, navigation }) {
                             />
                         </HeaderCard>
                         <MiddleCard>
-                            <UserCard>BALANCE:  ${(totalIncome - totalExpense).toFixed(2)}</UserCard>
+                            <UserCard>BALANCE:  ${totalData.toFixed(2)}</UserCard>
                         </MiddleCard>
                         <FooterCard>
                             <OwnerCard>PHAM VU LE MINH</OwnerCard>
@@ -82,10 +96,14 @@ export default function WalletScreen({ route, navigation }) {
 
     const renderHeaderHistory = () => {
         return (
-            <HistoryView style={{ borderBottomWidth: 0.7 }}>
+            <HistoryView>
                 <HeaderHistory>
                     <History>History</History>
-                    <FilterButton>
+                    <FilterButton onPress={() => {
+                        modalTrigger()
+                        handleFilterHistory(0)
+                    }}>
+                        {/* <FilterButton onPress={modalTrigger}> */}
                         <Image
                             style={{ width: 20, height: 20, tintColor: 'white', marginRight: 5 }}
                             source={icons.filter}
@@ -94,8 +112,27 @@ export default function WalletScreen({ route, navigation }) {
                     </FilterButton>
                 </HeaderHistory>
             </HistoryView>
-
         )
+    }
+
+    const handleFilterHistory = (number) => {
+        switch (number) {
+            case 0:
+                setShowModal(true)
+                break;
+            case 1:
+                setExpensesData(listHistory)
+                break;
+            case 2:
+                let filterIncome = listHistory.filter(a => a.status === "P")
+                setExpensesData(filterIncome)
+                break;
+            case 3:
+                let filterExpense = listHistory.filter(a => a.status === "C")
+                setExpensesData(filterExpense)
+                break
+            default: break;
+        }
 
     }
 
@@ -103,20 +140,8 @@ export default function WalletScreen({ route, navigation }) {
     const renderHistoryPayment = () => {
         const renderItem = ({ item }) => {
             const category = categoriesData.filter(a => a._id == item.id_Category)
-            const value = (item.status === "C") ? "-" : "+"
             return (
                 <HistoryCard category={category[0]} expense={item} />
-                // <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                //     <Image
-                //         style={{ width: 30, height: 30, tintColor: category[0].color }}
-                //         source={category[0].icon}
-                //     />
-                //     <View>
-                //         <Text>{category[0].name}</Text>
-                //         <Text>{item.title}</Text>
-                //     </View>
-                //     <Text>{value}${item.total.toFixed(2)}</Text>
-                // </View>
             )
         }
 
@@ -129,6 +154,39 @@ export default function WalletScreen({ route, navigation }) {
                 />
             </View>
         )
+    }
+
+    const [animation, setAnimation] = useState(new Animated.Value(0))
+    const { height } = Dimensions.get('window')
+    const openModal = animation.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1],
+        extrapolate: 'clamp',
+    });
+    const saveModal = animation.interpolate({
+        inputRange: [1, 2],
+        outputRange: [0, -height],
+        extrapolate: 'clamp',
+    })
+    const open = {
+        transform: [
+            { scale: openModal },
+            { translateY: saveModal }
+        ]
+    }
+    const modalTrigger = () => {
+        Animated.timing(animation, {
+            toValue: 1,
+            duration: 350,
+            useNativeDriver: false,
+        }).start();
+    }
+    const closeModal = () => {
+        Animated.timing(animation, {
+            toValue: 0,
+            duration: 350,
+            useNativeDriver: false,
+        }).start();
     }
 
     return (
@@ -146,6 +204,42 @@ export default function WalletScreen({ route, navigation }) {
                 {renderHeaderHistory()}
                 {renderHistoryPayment()}
             </View>
+
+
+
+            {/* Modal */}
+            <Modal visible={showModal} transparent>
+                <TouchableWithoutFeedback onPress={() => {
+                    closeModal()
+                    setTimeout(() => {
+                        setShowModal(false)
+                    }, 360);
+                }}>
+                    <ModalBackground>
+                        {/* <Animated.View style={[styles.background, open]}>
+                            <View style={{ width: 100, height: 100, }}></View>
+                        </Animated.View> */}
+                        <Animated.View style={[styles.background, open]}>
+                            <ModalContainer>
+                                <ViewModal
+                                    onPress={() => handleFilterHistory(1)}
+                                    style={{ borderTopStartRadius: SIZES.base, borderTopEndRadius: SIZES.base }}>
+                                    <Text style={styles.check}>All</Text>
+                                </ViewModal>
+                                <ViewModal
+                                    onPress={() => handleFilterHistory(2)}>
+                                    <Text style={styles.check}>Income</Text>
+                                </ViewModal>
+                                <ViewModal
+                                    onPress={() => handleFilterHistory(3)}
+                                    style={{ borderBottomStartRadius: SIZES.base, borderBottomEndRadius: SIZES.base }}>
+                                    <Text style={styles.check}>Expense</Text>
+                                </ViewModal>
+                            </ModalContainer>
+                        </Animated.View>
+                    </ModalBackground>
+                </TouchableWithoutFeedback>
+            </Modal>
         </Container >
     )
 }
@@ -186,4 +280,15 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 4,
     },
+    check: {
+        fontSize: SIZES.h3,
+        fontWeight: '600',
+        color: COLORS.primary,
+        letterSpacing: 0.5,
+    },
+    background: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
 })

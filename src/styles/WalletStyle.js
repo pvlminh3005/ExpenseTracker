@@ -6,6 +6,7 @@ export const Container = styled.View`
     flex: 1;
     /* padding: ${SIZES.base + 5}px 0; */
     align-items: center;
+    background: ${COLORS.lightGray};
 `
 export const HeaderBar = styled.View`
     width: 100%;
@@ -145,4 +146,26 @@ export const ImageNetwork = styled.Image`
 export const ImageVisa = styled.Image`
     width: 60px;
     height: 40px;
+`
+
+
+//MODAL
+export const ModalBackground = styled.View`
+    width: 100%;
+    height: 100%;
+    background-color:rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+`
+export const ModalContainer = styled.View`
+    width: 75%;
+    background-color: #f4f4f4;
+    border-radius: ${SIZES.base}px;
+    flex-direction: column;
+    align-items: center;
+`
+export const ViewModal = styled.TouchableOpacity`
+    width: 100%;
+    padding: ${SIZES.padding}px;
+    justify-content: center;
 `

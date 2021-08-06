@@ -5,14 +5,14 @@ import {
 } from '../styles/CategoryCardStyle'
 import { COLORS } from '../constants/'
 
-export default function CategoryCard({ selectedCategory, item, handleCategory }) {
+export default function CategoryCard({ selectedCategory, categoriesData, handleCategory }) {
 
     return (
-        <ButtonCard style={{ backgroundColor: (selectedCategory && selectedCategory.name == item.name) ? 'rgba(0,0,0,.05)' : COLORS.white, ...styles.shadow }} onPress={handleCategory}>
+        <ButtonCard style={{ backgroundColor: (selectedCategory && selectedCategory.name == categoriesData.name) ? 'rgba(0,0,0,.05)' : COLORS.white, ...styles.shadow }} onPress={handleCategory}>
             <ImageCard
-                style={{ tintColor: item.color }}
-                source={item.icon} />
-            <NameCard>{item.name}</NameCard>
+                style={{ tintColor: categoriesData.color }}
+                source={categoriesData.icon} />
+            <NameCard>{categoriesData.name}</NameCard>
         </ButtonCard>
     )
 }

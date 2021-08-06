@@ -119,7 +119,7 @@ export default function HomeScreen({ navigation }) {
                 setSelectedCategory(item)
             }
             return (
-                <CategoryCard item={item} handleCategory={handleCategory} selectedCategory={selectedCategory} />
+                <CategoryCard categoriesData={item} handleCategory={handleCategory} selectedCategory={selectedCategory} />
             )
         }
         return (
@@ -312,7 +312,7 @@ export default function HomeScreen({ navigation }) {
         <Container>
             <StatusBar barStyle='dark-content' />
             {/* Add new Category & Expense */}
-            <ButtonAddCategory onPress={() => navigation.navigate('NewExpense')}>
+            <ButtonAddCategory onPress={() => navigation.navigate('NewExpense', { categoriesData: categoriesData })}>
                 <ImageControl
                     style={{ tintColor: COLORS.white }}
                     source={icons.plus}
