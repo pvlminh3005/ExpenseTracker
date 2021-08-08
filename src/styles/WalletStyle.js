@@ -68,6 +68,7 @@ export const HistoryView = styled.View`
     padding: ${SIZES.base + 2}px 0;
     margin: ${SIZES.base - 5}px ${SIZES.base}px;
     border-color: ${COLORS.gray};
+    width: 95%;
 `
 
 

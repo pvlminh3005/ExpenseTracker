@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FlatList, Image, View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleSheet, Dimensions, Animated } from 'react-native'
+import { FlatList, Image, View, Text, TouchableOpacity, TouchableWithoutFeedback, ScrollView, Modal, StyleSheet, Dimensions, Animated } from 'react-native'
 import { icons, COLORS, SIZES } from '../constants'
 import LinearGradient from 'react-native-linear-gradient'
 
@@ -25,7 +25,7 @@ export default function WalletScreen({ route, navigation }) {
 
     useEffect(() => {
         fetchAllExpenses()
-    }, [navigation])
+    }, [])
 
     const renderCard = () => {
         let categoryData = categoriesData.map(item => {
@@ -148,13 +148,13 @@ export default function WalletScreen({ route, navigation }) {
         }
 
         return (
-            <View>
-                <FlatList
-                    data={expensesData}
-                    keyExtractor={(item) => `${item._id}`}
-                    renderItem={renderItem}
-                />
-            </View>
+            <FlatList
+                style={{ width: '100%' }}
+                data={expensesData}
+                keyExtractor={(item) => `${item._id}`}
+                renderItem={renderItem}
+            />
+
         )
     }
 
@@ -240,7 +240,7 @@ export default function WalletScreen({ route, navigation }) {
                     />
                 </TouchableOpacity>
             </HeaderBar>
-            <View style={{ width: '100%' }}>
+            <View style={{ width: '100%', flex: 1, alignItems: 'center' }}>
                 {renderCard()}
                 {renderHeaderHistory()}
                 {renderHistoryPayment()}

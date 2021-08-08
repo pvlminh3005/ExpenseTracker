@@ -4,6 +4,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { icons, COLORS, SIZES } from '../constants'
 import listIcons from '../../listIcons'
 import { Container, ModalBackground, ModalContainer, HeaderBar, ImageHeader, FormInputName, FormIcon, Name, NameInput, ButtonAddNewCategory, ImageAdd } from '../styles/NewExpenseStyle'
+import ModalSuccessCard from '../components/ModalSuccessCard';
 import { createCategory } from '../api/categoryAPI'
 import { createNewExpense } from '../api/expenseAPI'
 
@@ -251,7 +252,6 @@ export default function NewExpenseScreen({ route, navigation }) {
 
     const renderModalNewCategory = () => {
         const renderItem = ({ item }) => {
-
             const handleIcon = () => {
                 setSelectedIcon({
                     ...selectedIcon,
@@ -266,8 +266,7 @@ export default function NewExpenseScreen({ route, navigation }) {
                     style={{ ...styles.formIcon }}>
                     <Image
                         style={{ tintColor: item.color, ...styles.icon }}
-                        source={item.icon}
-                    />
+                        source={item.icon} />
                 </TouchableOpacity>
             )
         }
@@ -293,7 +292,6 @@ export default function NewExpenseScreen({ route, navigation }) {
                 if ((selectedIcon.name === "" || selectedIcon.name === null) && !selectedIcon.icon) alert('Error')
                 else if (!selectedIcon.icon) alert('You must choose icon')
                 else if (selectedIcon.name === "" || !selectedIcon.name) alert('You must enter your category name')
-
             }
         }
 
@@ -357,6 +355,12 @@ export default function NewExpenseScreen({ route, navigation }) {
         )
     }
 
+    const renderModalAlert = () => {
+        return (
+            <ModalSuccessCard />
+        )
+    }
+
     return (
         <View style={{ flex: 1 }}>
             <Container>
@@ -382,6 +386,7 @@ export default function NewExpenseScreen({ route, navigation }) {
                 </ScrollView>
             </Container>
             {renderModalNewCategory()}
+            {renderModalAlert()}
         </View>
 
     )

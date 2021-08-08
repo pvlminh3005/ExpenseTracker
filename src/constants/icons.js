@@ -23,6 +23,7 @@ export const title = require('../assets/images/title.png')
 export const description = require('../assets/images/description.png')
 export const status = require('../assets/images/status.png')
 export const total = require('../assets/images/total.png')
+export const success = require('../assets/images/success.png')
 
 export default {
     stroller,
@@ -50,4 +51,5 @@ export default {
     description,
     status,
     total,
+    success,
 }
