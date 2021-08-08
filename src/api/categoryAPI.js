@@ -15,3 +15,17 @@ export const getAllCategories = () => {
             })
     })
 }
+
+export const createCategory = (data) => {
+    return new Promise((resolve, reject) => {
+        axios({
+            method: 'POST',
+            url: `${MAIN_URL}/api/category`,
+            data: data
+        })
+            .then(response => {
+                resolve(response.data)
+            })
+            .catch(err => { return })
+    })
+}

@@ -3,7 +3,8 @@ import { FlatList, Image, View, Text, TouchableOpacity, TouchableWithoutFeedback
 import { icons, COLORS, SIZES } from '../constants'
 import LinearGradient from 'react-native-linear-gradient'
 
-import { Container, HeaderContent, HeaderBar, ImageHeader, HeaderCard, ManageTracker, MiddleCard, FooterCard, ImageChip, ImageNetwork, OwnerCard, UserCard, HeaderHistory, FilterButton, HistoryView, History, Filter, ManageText, TrackerText, ModalBackground, ModalContainer, ViewModal, } from '../styles/WalletStyle'
+import { Container, HeaderContent, HeaderBar, ImageHeader, HeaderCard, ManageTracker, MiddleCard, FooterCard, ImageChip, ImageNetwork, OwnerCard, UserCard, HeaderHistory, FilterButton, HistoryView, History, Filter, ManageText, TrackerText, ModalBackground, ModalContainer, ViewModal } from '../styles/WalletStyle'
+import listFilterHistory from '../../listFilterHistory'
 import { getAllExpenses } from '../api/expenseAPI'
 import HistoryCard from '../components/HistoryCard'
 let listHistory = [] //save all history 
@@ -13,6 +14,7 @@ export default function WalletScreen({ route, navigation }) {
     const { categoriesData } = route.params
     const [showModal, setShowModal] = useState(false)
     const [expensesData, setExpensesData] = useState([]) //save to filter history
+    const [selectedModal, setSelectedModal] = useState(1)
 
     const fetchAllExpenses = async () => {
         await getAllExpenses().then(data => {
@@ -133,7 +135,7 @@ export default function WalletScreen({ route, navigation }) {
                 break
             default: break;
         }
-
+        setSelectedModal(number)
     }
 
 
@@ -156,6 +158,7 @@ export default function WalletScreen({ route, navigation }) {
         )
     }
 
+    //Filter Animated
     const [animation, setAnimation] = useState(new Animated.Value(0))
     const { height } = Dimensions.get('window')
     const openModal = animation.interpolate({
@@ -189,6 +192,44 @@ export default function WalletScreen({ route, navigation }) {
         }).start();
     }
 
+    const renderModalFilterHistory = () => {
+
+        const renderItem = ({ item }) => {
+            return (
+                <ViewModal
+                    activeOpacity={0.7}
+                    style={{ backgroundColor: (selectedModal === item.id) ? COLORS.selected : COLORS.white }}
+                    onPress={() => handleFilterHistory(item.id)}>
+                    <Text style={styles.check}>{item.name}</Text>
+                </ViewModal>
+            )
+        }
+
+        return (
+            <Modal visible={showModal} transparent>
+                <TouchableWithoutFeedback onPress={() => {
+                    closeModal()
+                    setTimeout(() => {
+                        setShowModal(false)
+                    }, 360);
+                }}>
+                    <ModalBackground>
+                        <Animated.View style={[styles.background, open]}>
+                            <ModalContainer>
+                                <FlatList
+                                    style={{ width: '100%' }}
+                                    data={listFilterHistory}
+                                    keyExtractor={(item) => `${item.id}`}
+                                    renderItem={renderItem}
+                                />
+                            </ModalContainer>
+                        </Animated.View>
+                    </ModalBackground>
+                </TouchableWithoutFeedback>
+            </Modal>
+        )
+    }
+
     return (
         <Container>
             <HeaderBar>
@@ -204,43 +245,9 @@ export default function WalletScreen({ route, navigation }) {
                 {renderHeaderHistory()}
                 {renderHistoryPayment()}
             </View>
+            {renderModalFilterHistory()}
 
-
-
-            {/* Modal */}
-            <Modal visible={showModal} transparent>
-                <TouchableWithoutFeedback onPress={() => {
-                    closeModal()
-                    setTimeout(() => {
-                        setShowModal(false)
-                    }, 360);
-                }}>
-                    <ModalBackground>
-                        {/* <Animated.View style={[styles.background, open]}>
-                            <View style={{ width: 100, height: 100, }}></View>
-                        </Animated.View> */}
-                        <Animated.View style={[styles.background, open]}>
-                            <ModalContainer>
-                                <ViewModal
-                                    onPress={() => handleFilterHistory(1)}
-                                    style={{ borderTopStartRadius: SIZES.base, borderTopEndRadius: SIZES.base }}>
-                                    <Text style={styles.check}>All</Text>
-                                </ViewModal>
-                                <ViewModal
-                                    onPress={() => handleFilterHistory(2)}>
-                                    <Text style={styles.check}>Income</Text>
-                                </ViewModal>
-                                <ViewModal
-                                    onPress={() => handleFilterHistory(3)}
-                                    style={{ borderBottomStartRadius: SIZES.base, borderBottomEndRadius: SIZES.base }}>
-                                    <Text style={styles.check}>Expense</Text>
-                                </ViewModal>
-                            </ModalContainer>
-                        </Animated.View>
-                    </ModalBackground>
-                </TouchableWithoutFeedback>
-            </Modal>
-        </Container >
+        </Container>
     )
 }
 

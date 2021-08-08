@@ -22,7 +22,9 @@ export const COLORS = {
     peach: '#ff615f',
     purple: '#8e44ad',
     red: '#ff0000',
-    selected: '#f1f2f6',
+    lightRed: '#ff4757',
+    prestigeBlue: '#2f3542',
+    selected: '#f2f2f3',
 }
 
 export const SIZES = {

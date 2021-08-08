@@ -4,7 +4,6 @@ import { COLORS, SIZES } from '../constants/'
 
 export default function HistoryCard({ category, expense }) {
     var formatDate = new Date(expense.registration_data)
-    formatDate = formatDate.toDateString()
     const value = (expense.status === "C") ? "-" : "+"
     return (
         <View style={styles.container}>
@@ -23,7 +22,8 @@ export default function HistoryCard({ category, expense }) {
             </View>
             <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end' }}>
                 <Text style={{ textAlign: 'left', color: (expense.status === "P") ? COLORS.lightGreen : COLORS.red, ...styles.value }}>{value}${expense.total.toFixed(2)}</Text>
-                <Text style={styles.date}>{formatDate}</Text>
+                <Text style={styles.date}>{formatDate.toLocaleDateString()}</Text>
+                <Text style={styles.date}>{formatDate.toDateString()}</Text>
             </View>
 
         </View >
@@ -33,7 +33,6 @@ export default function HistoryCard({ category, expense }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginVertical: 5,
         marginHorizontal: SIZES.base + 2,
         paddingVertical: SIZES.base + 2,
         flexDirection: 'row',
@@ -45,6 +44,7 @@ const styles = StyleSheet.create({
     content: {
         flexDirection: 'row',
         alignItems: 'center',
+        maxWidth: '60%',
     },
     circle: {
         width: 45,
@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
         letterSpacing: 0.4,
     },
     date: {
-        fontSize: SIZES.h4,
-        fontWeight: '400',
+        fontSize: SIZES.body4 + 1,
+        fontWeight: '300',
         color: COLORS.darkgray,
     },
     wrapper: {

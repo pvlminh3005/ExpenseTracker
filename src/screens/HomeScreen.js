@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { View, TouchableOpacity, FlatList, Animated, ImageBackground, LogBox, StatusBar, ActivityIndicator, StyleSheet } from 'react-native'
+import { useIsFocused } from '@react-navigation/native';
 import { VictoryPie } from 'victory-native'
 import {
     //View
@@ -27,6 +28,7 @@ import { getAllExpenses, getExpensesById, confirmExpense } from '../api/expenseA
 
 
 export default function HomeScreen({ navigation }) {
+    const isFocused = useIsFocused()
     const [categoriesData, setCategoriesData] = useState([]) //save data categories
 
     const [refresh, setRefresh] = useState(false)
@@ -41,9 +43,11 @@ export default function HomeScreen({ navigation }) {
 
     useEffect(() => {
         fetchAllCategories()
-    }, [])
+    }, [isFocused])
 
     const renderHeader = () => {
+        let currentDate = new Date()
+        currentDate = currentDate.toDateString()
         return (
             <HeaderContent>
                 <View>
@@ -56,7 +60,7 @@ export default function HomeScreen({ navigation }) {
                             source={icons.calendar} />
                     </ButtonIcon>
                     <Content>
-                        <Title3>2 Aug, 2021</Title3>
+                        <Title3>{currentDate}</Title3>
                         <Title4>10% more than last month</Title4>
                     </Content>
                 </NavContent>

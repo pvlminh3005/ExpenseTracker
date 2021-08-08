@@ -18,6 +18,11 @@ export const chip = require('../assets/images/chip.png')
 export const online = require('../assets/images/online.png')
 export const visa = require('../assets/images/visa.png')
 export const filter = require('../assets/images/filter.png')
+export const add = require('../assets/images/add.png')
+export const title = require('../assets/images/title.png')
+export const description = require('../assets/images/description.png')
+export const status = require('../assets/images/status.png')
+export const total = require('../assets/images/total.png')
 
 export default {
     stroller,
@@ -40,4 +45,9 @@ export default {
     online,
     visa,
     filter,
+    add,
+    title,
+    description,
+    status,
+    total,
 }

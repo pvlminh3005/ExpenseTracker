@@ -47,3 +47,19 @@ export const confirmExpense = (id_Expense, status) => {
             })
     })
 }
+
+export const createNewExpense = (data) => {
+    return new Promise((resolve, reject) => {
+        axios({
+            method: 'POST',
+            url: `${MAIN_URL}/api/expense`,
+            data: data
+        })
+            .then(response => {
+                resolve(response.data)
+            })
+            .catch(err => {
+                return;
+            })
+    })
+}

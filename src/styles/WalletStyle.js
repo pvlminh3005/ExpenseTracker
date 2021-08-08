@@ -66,7 +66,7 @@ export const HeaderHistory = styled.View`
     `
 export const HistoryView = styled.View`
     padding: ${SIZES.base + 2}px 0;
-    margin: ${SIZES.base}px;
+    margin: ${SIZES.base - 5}px ${SIZES.base}px;
     border-color: ${COLORS.gray};
 `
 
@@ -78,9 +78,7 @@ export const FilterButton = styled.TouchableOpacity`
     padding: ${SIZES.base + 3}px ${SIZES.base + 7}px;
     border-radius: 5px;
     background: ${COLORS.gray};
-    
 `
-
 
 //TEXTS
 export const OwnerCard = styled.Text`
@@ -162,6 +160,7 @@ export const ModalContainer = styled.View`
     background-color: #f4f4f4;
     border-radius: ${SIZES.base}px;
     flex-direction: column;
+    overflow: hidden;
     align-items: center;
 `
 export const ViewModal = styled.TouchableOpacity`
