@@ -35,9 +35,9 @@ export default function ExpenseCard({ selectedCategory, item, handleConfirm }) {
                         <NameExpense style={{ color: selectedCategory.color }}>{selectedCategory.name}</NameExpense>
                     </HeaderExpense>
                 </WrapperExpense>
-                <DiscardButton>
+                {/* <DiscardButton>
                     <DiscardText>一</DiscardText>
-                </DiscardButton>
+                </DiscardButton> */}
             </View>
             {/* Description */}
             <ContentView>
