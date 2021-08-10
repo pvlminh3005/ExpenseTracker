@@ -4,6 +4,8 @@ import { COLORS, SIZES } from '../constants/'
 
 export default function HistoryCard({ category, expense }) {
     var formatDate = new Date(expense.registration_data)
+    formatTime = formatDate.toTimeString().split(' ').slice(0, 1)
+    console.log(formatTime)
     const value = (expense.status === "C") ? "-" : "+"
     return (
         <View style={styles.container}>
@@ -14,7 +16,6 @@ export default function HistoryCard({ category, expense }) {
                         source={category.icon}
                     />
                 </View>
-
                 <View>
                     <Text style={styles.name}>{category.name}</Text>
                     <Text style={styles.title}>{expense.title}</Text>
@@ -22,7 +23,7 @@ export default function HistoryCard({ category, expense }) {
             </View>
             <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end' }}>
                 <Text style={{ textAlign: 'left', color: (expense.status === "P") ? COLORS.lightGreen : COLORS.red, ...styles.value }}>{value}${expense.total.toFixed(2)}</Text>
-                <Text style={styles.date}>{formatDate.toLocaleDateString()}</Text>
+                <Text style={styles.date}>{formatTime}</Text>
                 <Text style={styles.date}>{formatDate.toDateString()}</Text>
             </View>
 
