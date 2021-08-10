@@ -12,6 +12,7 @@ import { createNewExpense } from '../api/expenseAPI'
 export default function NewExpenseScreen({ route, navigation }) {
     const { categoriesData } = route.params
     const [showModal, setShowModal] = useState(false)
+    const [visibleAlert, setVisibleAlert] = useState(false)
     const [selectedIcon, setSelectedIcon] = useState({
         name: null,
         icon: null,
@@ -63,8 +64,28 @@ export default function NewExpenseScreen({ route, navigation }) {
             })
             setValue1(null)
             setValue2(null)
-            alert("Create success")
+
+            setVisibleAlert(true)
+            modalTrigger()
+
+            setTimeout(() => {
+                closeModal()
+                setTimeout(() => {
+                    setVisibleAlert(false)
+                }, 300);
+            }, 2000);
         })
+    }
+    const handleClearData = () => {
+        setNewExpense({
+            id_Category: null,
+            title: null,
+            total: 0,
+            description: null,
+            location: null,
+        })
+        setValue1(null)
+        setValue2(null)
     }
 
     const renderCategoriesData = () => {
@@ -160,8 +181,7 @@ export default function NewExpenseScreen({ route, navigation }) {
                                 source={icons.total} />
                         </View>
                         <TextInput
-                            value={newExpense.total}
-                            defaultValue={0}
+                            value={newExpense.total.toString()}
                             keyboardType='numeric'
                             style={{ height: 55, ...styles.textInput }}
                             onChangeText={value => setNewExpense({ ...newExpense, total: value })} />
@@ -207,12 +227,15 @@ export default function NewExpenseScreen({ route, navigation }) {
                         <Text style={styles.nameButton}>Add</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
+                        onPress={() => {
+                            handleClearData()
+                        }}
                         style={{ backgroundColor: COLORS.lightRed, ...styles.formButton }}
                     >
                         <Text style={styles.nameButton}>Clear</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </View >
         )
     }
 
@@ -357,7 +380,7 @@ export default function NewExpenseScreen({ route, navigation }) {
 
     const renderModalAlert = () => {
         return (
-            <ModalSuccessCard />
+            <ModalSuccessCard open={open} close={closeModal} visible={visibleAlert} setVisible={setVisibleAlert} />
         )
     }
 

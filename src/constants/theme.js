@@ -19,12 +19,14 @@ export const COLORS = {
     lightBlue: '#95a9bb',
     darkgreen: '#008159',
     lightGreen: '#00a772',
+    lightGreen2: '#2ecc71',
     peach: '#ff615f',
     purple: '#8e44ad',
     red: '#ff0000',
     lightRed: '#ff4757',
     prestigeBlue: '#2f3542',
     selected: '#f2f2f3',
+
 }
 
 export const SIZES = {
